@@ -28,4 +28,4 @@ for i,j in zip(class_names, nums_names):
     else:
         personal_info += '<br /><br />'.join([i + ' ' + j for i,j in zip(labels, personal)]).replace('     ', '<br /><br />')
         
-personal_info
+ssl = a_soup.find(class_='details-wrapper').find(class_='col-xs-12 links').find(class_='row').find(class_='col-xs-12 col-md-8').find_all('a')
