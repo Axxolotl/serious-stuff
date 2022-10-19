@@ -32,6 +32,6 @@ for link in hrefs:
     pers_info = get_personal_info(w_soup)
     uuid = int(hashlib.sha256(name.encode('utf-8')).hexdigest(), 16) % 10**12
 
-    dataframe.loc[len(dataframe.index)-1] = ['', '', '', '', '', name.upper(), '', pers_info, ' '.join(photos), '', '', '', '', '', '','','','','','','']
+    dataframe.loc[len(dataframe.index)-1] = [uuid, '', '', '', '', name.upper(), '', pers_info, ' '.join(photos), '', '', '', '', '', '','','','','','','']
 
 dataframe.to_csv('store.csv')
