@@ -35,3 +35,17 @@ for link in hrefs:
     dataframe.loc[len(dataframe.index)-1] = [uuid, '', '', '', '', name.upper(), '', pers_info, ' '.join(photos), '', '', '', '', '', '','','','','','','']
 
 dataframe.to_csv('store.csv')
+
+
+
+url = 'https://www.mayak-agent.ru/'
+gender = ['actresses', 'actors']
+hrefs = []
+
+for i in gender:
+    req = requests.get(url+i)
+
+    soup = BeautifulSoup(req.text, 'lxml')
+
+    act = soup.find(class_ = 'row bottom20px').find_all('a')
+    hrefs += ['https://www.mayak-agent.ru' + i.get('href') for i in act]
