@@ -18,6 +18,9 @@ soup = BeautifulSoup(req.text, 'lxml')
 
 actresses = soup.find(class_ = 'row bottom20px').find_all('a')
 hrefs = ['https://www.mayak-agent.ru' + i.get('href') for i in actresses]
+actors = soup.find(class_='row bottom20px').find_all('a')
+actors_hrefs = ['https://www.mayak-agent.ru' + i.get('href') for i in actors]
+hrefs.extend(actors_hrefs)
 
 for link in hrefs:
     woman = requests.get(link)
