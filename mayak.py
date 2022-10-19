@@ -1,3 +1,4 @@
+import hashlib
 import requests
 from bs4 import BeautifulSoup
 
@@ -29,7 +30,8 @@ for link in hrefs:
     photos = [i.find('img')['src'] for i in w_soup.find_all(class_='swiper-slide')]
     name = w_soup.find('h1').text.strip()
     pers_info = get_personal_info(w_soup)
-    
+    uuid = int(hashlib.sha256(name.encode('utf-8')).hexdigest(), 16) % 10**12
+
     dataframe.loc[len(dataframe.index)-1] = ['', '', '', '', '', name.upper(), '', pers_info, ' '.join(photos), '', '', '', '', '', '','','','','','','']
 
 dataframe.to_csv('store.csv')
