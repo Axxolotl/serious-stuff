@@ -49,13 +49,13 @@ def enter_info(message):
         bot.register_next_step_handler(dict_form[int(message)], get_form)
         
      # ввод курса
-     elif message.text == 'Ввести курс':
+    elif message.text == 'Ввести курс':
         bot.send_message(message.chat.id, "Отправь мне цифру своего курса")
         # отправляем курс на проверку и запись
         bot.register_next_step_handler(message, user_faculty)
         
      # ввод факультета (сделать ту штуку с парсером)
-     elif message.text == 'Ввести название специальности':
+    elif message.text == 'Ввести название специальности':
         bot.send_message(message.chat.id, 'Отправь мне свою специальность')
         # отправляем факультет на запись
         bot.register_next_step_handler(message, user_speciality)
