@@ -16,3 +16,24 @@ def start(message):
 # пишем эту функцию
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
+    if message.text == 'Ввести форму обучения':
+        dict_form = {
+            1: 'Дневная',
+            2: "Вечерняя",
+            3: "Заочная",
+            4: "Второе образование",
+            5: "Магистратура",
+            6: "Аспирантура",
+            7: "Дистанционное"
+        }
+        bot.send_message(message.chat.id, text='\n'.join([str(i) + '. ' + j for i,j in dict_form.items()]))
+        bot.send_message(message.chat.id, text='Введите цифру, соответствующую Вашей форме')
+        bot.register_next_step_handler(message, get_form)
+
+        
+        
+        
+        
+    def get_form(message):
+        form_edu = message.text
+        bot.send_message(message.chat.id, text=form_edu)
