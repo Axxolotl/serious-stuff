@@ -1,5 +1,7 @@
 # импорт библиотек для написания бота
 import telebot
+# импорт библиотек для написания бота
+import telebot
 from telebot import types # для указание типов
 
 # пандас для работы с таблицей пользователей (в дальнейшем возможна замена на json)
@@ -11,6 +13,39 @@ df = pd.read_csv('DB_RSUH_users.csv').drop('Unnamed: 0', axis=1)
 # создаем сущность бота
 token = '2085419627:AAFaAvnPisevlhyEfpG1m8rA8kmYRlKnXG4'
 bot = telebot.TeleBot(token, parse_mode=None)
+
+####################################################### ЗАПИСИ ПЕРЕМЕННЫХ В БАЗУ ДАННЫХ ###############################################################
+# форма обучения
+dict_form = {
+            1: 'Дневная',
+            2: "Вечерняя",
+            3: "Заочная",
+            4: "Второе образование",
+            5: "Магистратура",
+            6: "Аспирантура",
+            7: "Дистанционное"
+        }
+
+def get_form(message):
+    form_edu = int(message.text)
+    if int(message.text) in range(1, 8):
+        df.loc[df[df['id']==message.from_user.username].index, 'education_form'] = dict_form[form_edu]
+    else:
+        bot.send_message(message.chat.id, text='Пошел нахуй')
+        
+# курс
+def user_faculty(message):
+    if int(message.text) in range(1,7): 
+        faculty = message.text
+        bot.send_message(message.chat.id, faculty)
+        df.loc[df[df['id']==message.from_user.username].index, 'faculty'] = faculty
+            
+# специальность       
+def user_speciality(message):
+    speciality = message.text
+    bot.send_message(message.chat.id, speciality)
+    df.loc[df[df['id']==message.from_user.username].index, 'speciality'] = speciality
+######################################################################################################################
 
 # реакция бота на /start
 @bot.message_handler(commands=['start'])
@@ -34,22 +69,13 @@ def enter_info(message):
     
     # ввод формы обучения
     if message.text == 'Ввести форму обучения':
-        dict_form = {
-            1: 'Дневная',
-            2: "Вечерняя",
-            3: "Заочная",
-            4: "Второе образование",
-            5: "Магистратура",
-            6: "Аспирантура",
-            7: "Дистанционное"
-        }
         bot.send_message(message.chat.id, text='\n'.join([str(i) + '. ' + j for i,j in dict_form.items()]))
         bot.send_message(message.chat.id, text='Введите цифру, соответствующую Вашей форме')
         # отправляем форму обучения на запись в таблицу (мб можно через лямбда функцию записать??)
-        bot.register_next_step_handler(dict_form[int(message)], get_form)
+        bot.register_next_step_handler(message, get_form)
         
      # ввод курса
-    elif message.text == 'Ввести курс':
+    elif (message.text == 'Ввести курс'):
         bot.send_message(message.chat.id, "Отправь мне цифру своего курса")
         # отправляем курс на проверку и запись
         bot.register_next_step_handler(message, user_faculty)
@@ -60,21 +86,3 @@ def enter_info(message):
         # отправляем факультет на запись
         bot.register_next_step_handler(message, user_speciality)
         
-        
-####################################################### ЗАПИСИ ПЕРЕМЕННЫХ В БАЗУ ДАННЫХ ###############################################################
-# форма обучения
-    def get_form(message):
-        form_edu = message.text
-        df.loc[df[df['id']==message.from_user.username].index, 'education_form'] = form_edu
-# курс
-    def user_faculty(message):
-        if int(message.text) in range(1,7): 
-            faculty = message.text
-            bot.send_message(message.chat.id, faculty)
-            df.loc[df[df['id']==message.from_user.username].index, 'faculty'] = faculty
-            
-# специальность       
-    def user_speciality(message):
-        speciality = message.text
-        bot.send_message(message.chat.id, speciality)
-        df.loc[df[df['id']==message.from_user.username].index, 'speciality'] = speciality
