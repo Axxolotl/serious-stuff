@@ -39,8 +39,7 @@ def get_form(message):
         should_speciality(message)
     else:
         bot.send_message(message.chat.id, text='Пошел нахуй')
-        
-        
+                
 # курс
 def user_faculty(message):
     if int(message.text) in range(1,7): 
@@ -80,7 +79,7 @@ def start(message):
     markup.add(btn1, btn2)
     
     # приветственное сообщение
-    bot.send_photo(message.chat.id, "https://img.ifunny.co/images/689fac9cc5aa43a0238b61251b07097c651ee45ced426a573ca78d46ed0043ee_1.jpg",  reply_markup=markup)
+    bot.send_video(message.chat.id, "https://media.tenor.com/J8XcyuI5w1QAAAAd/neco-arc-neco.gif",  reply_markup=markup)
 
 # функция - обработчик кнопок
 @bot.message_handler(content_types=['text'])
