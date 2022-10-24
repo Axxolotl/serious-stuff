@@ -10,7 +10,7 @@ import json
 with open('специальности.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
 # считываем таблицу с данными юзеров
-df = pd.read_csv('DB_RSUH_users.csv').drop('Unnamed: 0', axis=1)
+df = pd.read_csv('DB_RSUH_users.csv')
 
 ##################################################################################
 # создаем сущность бота
