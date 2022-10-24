@@ -7,10 +7,12 @@ import pandas as pd
 
 import json
 
+import re
+
 with open('специальности.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
 # считываем таблицу с данными юзеров
-df = pd.read_csv('DB_RSUH_users.csv')
+df = pd.read_csv('DB_RSUH_users.csv', sep=';')
 
 ##################################################################################
 # создаем сущность бота
@@ -33,48 +35,56 @@ def get_form(message):
     form_edu = int(message.text)
     if int(message.text) in range(1, 8):
         df.loc[df[df['id']==message.from_user.username].index, 'education_form'] = dict_form[form_edu]
+        
+        should_speciality(message)
     else:
         bot.send_message(message.chat.id, text='Пошел нахуй')
+        
         
 # курс
 def user_faculty(message):
     if int(message.text) in range(1,7): 
         faculty = message.text
-        bot.send_message(message.chat.id, faculty)
-        df.loc[df[df['id']==message.from_user.username].index, 'faculty'] = faculty
-            
+        bot.send_message(message.chat.id, 'АГа, пон')
+        df.loc[df[df['id']==message.from_user.username].index, 'faculty'] = ('Курс ' + faculty)
+        
+        should_speciality(message)
+
+        
+# проверка на то, нужно ли вводить специальность или нет
+def should_speciality(message):
+    user_string = df[df['id']==message.from_user.username]
+    print(user_string)
+    if user_string.faculty.values != '' and user_string.education_form.values != '':
+        ############### ЗАДАВАТЬ ПОЛЬЗОВАТЕЛЮ ВОПРОС, ПРАВИЛЬНО ЛИ ОН ВВЕЛ ВСЕ ДАННЫЕ????
+        bot.send_message(message.chat.id, text='Найс!!!\nА теперь введите название вашего факультета')
+        bot.register_next_step_handler(message, enter_speciality)
 # специальность       
 def user_speciality(message):
     speciality = message.text
     bot.send_message(message.chat.id, speciality)
     df.loc[df[df['id']==message.from_user.username].index, 'speciality'] = speciality
+    
 ######################################################################################################################
 
 # реакция бота на /start
 @bot.message_handler(commands=['start'])
 def start(message):
     # создаем запись в таблице и записываем в колонку id ник пользователя в тг (нужно потом сделать проверку на существование пользователя в базе)
-    df.loc[len(df)-1] = [message.from_user.username, '', '', '']
+    df.loc[len(df)] = [message.from_user.username, '', '', '']
     
     # создаем кнопки для ввода стартовой информации
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("Ввести форму обучения")
     btn2 = types.KeyboardButton("Ввести курс")
-    btn3= types.KeyboardButton('Ввести название специальности')
-    markup.add(btn1, btn2, btn3)
+    markup.add(btn1, btn2)
     
     # приветственное сообщение
-    bot.send_photo(message.chat.id, "https://i.pinimg.com/originals/ae/18/b0/ae18b0d2525ea57e7c903960f6d84c4a.jpg",  reply_markup=markup)
+    bot.send_photo(message.chat.id, "https://img.ifunny.co/images/689fac9cc5aa43a0238b61251b07097c651ee45ced426a573ca78d46ed0043ee_1.jpg",  reply_markup=markup)
 
 # функция - обработчик кнопок
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
-    
-    user_string = df.loc[df['id']==message.from_user.username]
-    if user_string.course and user_string.education_form:
-        ############### ЗАДАВАТЬ ПОЛЬЗОВАТЕЛЮ ВОПРОС, ПРАВИЛЬНО ЛИ ОН ВВЕЛ ВСЕ ДАННЫЕ????
-        bot.send_message(message.chat.id, text='Введите название вашего факультета')
-        bot.register_next_step_handler(message, enter_speciality)
         
     # ввод формы обучения
     if message.text == 'Ввести форму обучения':
@@ -90,7 +100,8 @@ def enter_info(message):
         bot.register_next_step_handler(message, user_faculty)
 
 def enter_speciality(message):
-
+    #all_spec = 
+    bot.send_message(message.chat.id, 'йооооооооооооооооооооооооооо')
+    #sp_to_choose = re.findall(f'{message.text.lower()}', all_spec)
     # отправляем факультет на запись
     bot.register_next_step_handler(message, user_speciality)
-        
