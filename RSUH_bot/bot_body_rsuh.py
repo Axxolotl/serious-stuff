@@ -65,6 +65,12 @@ def start(message):
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
     
+    user_string = df.loc[df['id']==message.from_user.username]
+    if user_string.course and user_string.education_form:
+        ############### ЗАДАВАТЬ ПОЛЬЗОВАТЕЛЮ ВОПРОС, ПРАВИЛЬНО ЛИ ОН ВВЕЛ ВСЕ ДАННЫЕ????
+        bot.send_message(message.chat.id, text='Введите название вашего факультета')
+        bot.register_next_step_handler(message, enter_speciality)
+        
     # ввод формы обучения
     if message.text == 'Ввести форму обучения':
         bot.send_message(message.chat.id, text='\n'.join([str(i) + '. ' + j for i,j in dict_form.items()]))
@@ -77,10 +83,9 @@ def enter_info(message):
         bot.send_message(message.chat.id, "Отправь мне цифру своего курса")
         # отправляем курс на проверку и запись
         bot.register_next_step_handler(message, user_faculty)
-        
-     # ввод факультета (сделать ту штуку с парсером)
-    elif message.text == 'Ввести название специальности':
-        bot.send_message(message.chat.id, 'Отправь мне свою специальность')
-        # отправляем факультет на запись
-        bot.register_next_step_handler(message, user_speciality)
+
+def enter_speciality(message):
+
+    # отправляем факультет на запись
+    bot.register_next_step_handler(message, user_speciality)
         
