@@ -30,3 +30,10 @@ for edu_form in form:
         # жмякаем на кнопку "продолжить"
         continue_ = driver.find_element(By.ID, 'filters').click()
         time.sleep(2)
+
+for i in zip(['formob', 'kyrs'], [form[0], course[0]]):
+    select = Select(driver.find_element(By.ID, i[0]))
+    select.select_by_visible_text(i[1])
+    
+continue_ = driver.find_element(By.ID, 'filters').click()
+time.sleep(2)
