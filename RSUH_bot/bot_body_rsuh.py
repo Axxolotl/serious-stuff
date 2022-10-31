@@ -1,7 +1,3 @@
-# импорт библиотек для написания бота
-import telebot
-from telebot import types # для указание типов
-
 import re
 
 import json
@@ -126,4 +122,9 @@ def enter_speciality(message):
         
     # отправляем факультет на запись
     bot.register_next_step_handler(message, user_speciality)
+    
 ###########################################################################################################################
+def approved(message):
+    if message.text == 'Да':
+        with open(r'C:\Users\azaza\OneDrive\Desktop\работа\user_database.json', 'w', encoding='utf-8') as file:
+            json.dump(user_data, file, indent = 2, ensure_ascii=False)
