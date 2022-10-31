@@ -56,13 +56,15 @@ def user_speciality(message):
     speciality = globals()['dict_spec'][int(message.text)]
     bot.send_message(message.chat.id, speciality)
     user_data[message.from_user.username]['speciality'] = speciality
+    is_info_right(message)
     
+def is_info_right(message):
     for i in user_data[message.from_user.username].items():
         bot.send_message(message.chat.id, i[0]+': '+i[1])
     
     # создаем кнопки для подтверждения
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("Да")
+    btn1 = types.KeyboardButton("Да", )
     btn2 = types.KeyboardButton("Нет")
     markup.add(btn1, btn2)
     
@@ -88,7 +90,7 @@ def start(message):
     
     # приветственное сообщение
     bot.send_video(message.chat.id, "https://media.tenor.com/J8XcyuI5w1QAAAAd/neco-arc-neco.gif",  reply_markup=markup)
-
+    
 # функция - обработчик кнопок
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
@@ -126,5 +128,7 @@ def enter_speciality(message):
 ###########################################################################################################################
 def approved(message):
     if message.text == 'Да':
-        with open(r'C:\Users\azaza\OneDrive\Desktop\работа\user_database.json', 'w', encoding='utf-8') as file:
+        with open(r'user_database.json', 'w', encoding='utf-8') as file:
             json.dump(user_data, file, indent = 2, ensure_ascii=False)
+    elif message.text == 'Нет':
+        start(message)
