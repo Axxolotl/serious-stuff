@@ -1,3 +1,5 @@
+import telebot
+
 import re
 
 import json
@@ -63,6 +65,7 @@ def user_speciality(message, dict_spec):
         is_info_right(message)
     except:
         bot.send_message(message.chat.id, text='Что то тут не так...')
+        
 def is_info_right(message):
     for i in user_data[message.from_user.username].items():
         bot.send_message(message.chat.id, i[1])
@@ -82,20 +85,24 @@ def is_info_right(message):
 # реакция бота на /start
 @bot.message_handler(commands=['start'])
 def start(message):
-    # создаем запись в таблице и записываем в колонку id ник пользователя в тг (нужно потом сделать проверку на существование пользователя в базе)
-    user_data[message.from_user.username] = {'form': None,
-                          'course': None,
-                          'speciality': None}
-    
-    # создаем кнопки для ввода стартовой информации
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("Ввести форму обучения")
-    btn2 = types.KeyboardButton("Ввести курс")
-    markup.add(btn1, btn2)
-    
-    # приветственное сообщение
-    bot.send_video(message.chat.id, "https://media.tenor.com/J8XcyuI5w1QAAAAd/neco-arc-neco.gif",  reply_markup=markup)
-    
+    if message.text!= 'Нет' and message.from_user.username in user_data.keys():
+        bot.send_photo(message.chat.id, 'https://sun9-28.userapi.com/impg/HBKGn-a2I3_DvKNS-U-8IigL7UUmBDmTtew5kg/j8KR3EJc7Mc.jpg?size=497x604&quality=95&sign=c68739d29dbcb863c33903b0c44f78d2&type=album')
+        is_info_right(message)
+    else:
+        # создаем запись в таблице и записываем в колонку id ник пользователя в тг 
+        user_data[message.from_user.username] = {'form': None,
+                              'course': None,
+                              'speciality': None}
+
+        # создаем кнопки для ввода стартовой информации
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Ввести форму обучения")
+        btn2 = types.KeyboardButton("Ввести курс")
+        markup.add(btn1, btn2)
+
+        # приветственное сообщение
+        bot.send_video(message.chat.id, "https://media.tenor.com/J8XcyuI5w1QAAAAd/neco-arc-neco.gif",  reply_markup=markup)
+
 # функция - обработчик кнопок
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
