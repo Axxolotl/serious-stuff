@@ -11,6 +11,9 @@ import re
 
 with open('специальности.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
+with open(r'C:\Users\azaza\OneDrive\Desktop\работа\user_database.json', 'r', encoding='utf-8') as database:
+    user_data = json.load(database)
+user_data
 # считываем таблицу с данными юзеров
 # df = pd.read_csv('DB_RSUH_users.csv', sep=';')
 
