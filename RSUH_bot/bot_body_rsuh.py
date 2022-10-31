@@ -2,20 +2,13 @@
 import telebot
 from telebot import types # для указание типов
 
-# пандас для работы с таблицей пользователей (в дальнейшем возможна замена на json)
-import pandas as pd
-
-import json
-
 import re
 
+import json
 with open('специальности.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
-with open(r'C:\Users\azaza\OneDrive\Desktop\работа\user_database.json', 'r', encoding='utf-8') as database:
+with open(r'user_database.json', 'r', encoding='utf-8') as database:
     user_data = json.load(database)
-user_data
-# считываем таблицу с данными юзеров
-# df = pd.read_csv('DB_RSUH_users.csv', sep=';')
 
 ##################################################################################
 # создаем сущность бота
@@ -104,8 +97,17 @@ def enter_info(message):
         bot.register_next_step_handler(message, user_faculty)
 
 def enter_speciality(message):
-    #all_spec = 
-    bot.send_message(message.chat.id, 'йооооооооооооооооооооооооооо')
-    #sp_to_choose = re.findall(f'{message.text.lower()}', all_spec)
+    user_string = user_data[message.from_user.username]
+    key = user_string['form'] + ',' + user_string['course']
+    
+    all_specialities = specialities_json[key]
+    all_specialities = [i for i in all_specialities if i.lower().find(message.text.lower()) != -1]
+    
+    dict_spec = {num:spec for num, spec in zip(range(1,len(all_specialities)+1), all_specialities)}
+    
+    bot.send_message(message.chat.id, 'Выбери подходящую цифру:')
+    for i in zip_spec.items():
+        bot.send_message(message.chat.id, str(i[0])+'. '+i[1])
+        
     # отправляем факультет на запись
     bot.register_next_step_handler(message, user_speciality)
