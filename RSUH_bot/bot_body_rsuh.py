@@ -24,23 +24,26 @@ dict_form = {
         }
 
 def get_form(message):
-    form_edu = int(message.text)
-    if form_edu in range(1, 8):
-        user_data[message.from_user.username]['form'] = dict_form[form_edu]
+    try:
+        form_edu = int(message.text)
+        if form_edu in range(1, 8):
+            user_data[message.from_user.username]['form'] = dict_form[form_edu]
         
-        should_speciality(message)
-    else:
-        bot.send_message(message.chat.id, text='Пошел нахуй')
+            should_speciality(message)
+    except:
+        bot.send_message(message.chat.id, text='Что то тут не так...')
                 
 # курс
 def user_faculty(message):
-    if int(message.text) in range(1,7): 
-        faculty = message.text
-        bot.send_message(message.chat.id, 'АГа, пон')
-        user_data[message.from_user.username]['course'] = ('Курс ' + faculty)
+    try:
+        if int(message.text) in range(1,7): 
+            faculty = message.text
+            bot.send_message(message.chat.id, 'АГа, пон')
+            user_data[message.from_user.username]['course'] = ('Курс ' + faculty)
         
-        should_speciality(message)
-
+            should_speciality(message)
+    except:
+        bot.send_message(message.chat.id, text='Что то тут не так...')
         
 # проверка на то, нужно ли вводить специальность или нет
 def should_speciality(message):
@@ -53,14 +56,16 @@ def should_speciality(message):
         
 # специальность       
 def user_speciality(message, dict_spec):
-    speciality = dict_spec[int(message.text)]
-    bot.send_message(message.chat.id, speciality)
-    user_data[message.from_user.username]['speciality'] = speciality
-    is_info_right(message)
-    
+    try:
+        speciality = dict_spec[int(message.text)]
+        bot.send_message(message.chat.id, speciality)
+        user_data[message.from_user.username]['speciality'] = speciality
+        is_info_right(message)
+    except:
+        bot.send_message(message.chat.id, text='Что то тут не так...')
 def is_info_right(message):
     for i in user_data[message.from_user.username].items():
-        bot.send_message(message.chat.id, i[0]+': '+i[1])
+        bot.send_message(message.chat.id, i[1])
     
     # создаем кнопки для подтверждения
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -114,15 +119,18 @@ def enter_speciality(message):
     
     all_specialities = specialities_json[key]
     all_specialities = [i for i in all_specialities if i.lower().find(message.text.lower()) != -1]
+    if len(all_specialities) == 0:
+        bot.send_message(message.chat.id, text='Похоже ВЫ ввели какую то хуйню, и мы не можем ничего найти блять')
+        should_speciality(message)
+    else:
+        dict_spec = {num:spec for num, spec in zip(range(1,len(all_specialities)+1), all_specialities)}
     
-    dict_spec = {num:spec for num, spec in zip(range(1,len(all_specialities)+1), all_specialities)}
-    
-    bot.send_message(message.chat.id, 'Выбери подходящую цифру:')
-    for i in dict_spec.items():
-        bot.send_message(message.chat.id, str(i[0])+'. '+i[1])
+        bot.send_message(message.chat.id, 'Выбери подходящую цифру:')
+        for i in dict_spec.items():
+            bot.send_message(message.chat.id, str(i[0])+'. '+i[1])
         
     # отправляем факультет на запись
-    bot.register_next_step_handler(message, user_speciality, dict_spec)
+        bot.register_next_step_handler(message, user_speciality, dict_spec)
     
 ###########################################################################################################################
 def approved(message):
