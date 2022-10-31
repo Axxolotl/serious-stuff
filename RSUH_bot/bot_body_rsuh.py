@@ -54,9 +54,10 @@ def should_speciality(message):
         ############### ЗАДАВАТЬ ПОЛЬЗОВАТЕЛЮ ВОПРОС, ПРАВИЛЬНО ЛИ ОН ВВЕЛ ВСЕ ДАННЫЕ????
         bot.send_message(message.chat.id, text='Найс!!!\nА теперь введите название вашего факультета')
         bot.register_next_step_handler(message, enter_speciality)
+        
 # специальность       
 def user_speciality(message):
-    speciality = message.text
+    speciality = globals()['dict_spec'][int(message.text)]
     bot.send_message(message.chat.id, speciality)
     user_data[message.from_user.username]['speciality'] = speciality
     
@@ -104,9 +105,10 @@ def enter_speciality(message):
     all_specialities = [i for i in all_specialities if i.lower().find(message.text.lower()) != -1]
     
     dict_spec = {num:spec for num, spec in zip(range(1,len(all_specialities)+1), all_specialities)}
+    globals()['dict_spec'] = dict_spec
     
     bot.send_message(message.chat.id, 'Выбери подходящую цифру:')
-    for i in zip_spec.items():
+    for i in dict_spec.items():
         bot.send_message(message.chat.id, str(i[0])+'. '+i[1])
         
     # отправляем факультет на запись
