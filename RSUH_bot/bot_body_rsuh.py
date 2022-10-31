@@ -60,10 +60,20 @@ def user_speciality(message):
     speciality = globals()['dict_spec'][int(message.text)]
     bot.send_message(message.chat.id, speciality)
     user_data[message.from_user.username]['speciality'] = speciality
+    
     for i in user_data[message.from_user.username].items():
         bot.send_message(message.chat.id, i[0]+': '+i[1])
-    bot.send_message(message.chat.id, text='Всё правильно?')
-    bot.register_next_step_handler(message,)
+    
+    # создаем кнопки для подтверждения
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton("Да")
+    btn2 = types.KeyboardButton("Нет")
+    markup.add(btn1, btn2)
+    
+    bot.send_message(message.chat.id, text='Всё правильно?', reply_markup=markup)
+    
+    bot.register_next_step_handler(message, approved)
+    
 ######################################################################################################################
 
 # реакция бота на /start
@@ -116,4 +126,4 @@ def enter_speciality(message):
         
     # отправляем факультет на запись
     bot.register_next_step_handler(message, user_speciality)
-    
+###########################################################################################################################
