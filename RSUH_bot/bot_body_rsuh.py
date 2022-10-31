@@ -60,7 +60,10 @@ def user_speciality(message):
     speciality = globals()['dict_spec'][int(message.text)]
     bot.send_message(message.chat.id, speciality)
     user_data[message.from_user.username]['speciality'] = speciality
-    
+    for i in user_data[message.from_user.username].items():
+        bot.send_message(message.chat.id, i[0]+': '+i[1])
+    bot.send_message(message.chat.id, text='Всё правильно?')
+    bot.register_next_step_handler(message,)
 ######################################################################################################################
 
 # реакция бота на /start
@@ -113,3 +116,4 @@ def enter_speciality(message):
         
     # отправляем факультет на запись
     bot.register_next_step_handler(message, user_speciality)
+    
