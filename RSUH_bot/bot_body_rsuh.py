@@ -12,7 +12,7 @@ import re
 with open('специальности.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
 # считываем таблицу с данными юзеров
-df = pd.read_csv('DB_RSUH_users.csv', sep=';')
+# df = pd.read_csv('DB_RSUH_users.csv', sep=';')
 
 ##################################################################################
 # создаем сущность бота
@@ -33,8 +33,8 @@ dict_form = {
 
 def get_form(message):
     form_edu = int(message.text)
-    if int(message.text) in range(1, 8):
-        df.loc[df[df['id']==message.from_user.username].index, 'education_form'] = dict_form[form_edu]
+    if form_edu in range(1, 8):
+        user_data[message.from_user.username]['form'] = dict_form[form_edu]
         
         should_speciality(message)
     else:
@@ -45,16 +45,16 @@ def user_faculty(message):
     if int(message.text) in range(1,7): 
         faculty = message.text
         bot.send_message(message.chat.id, 'АГа, пон')
-        df.loc[df[df['id']==message.from_user.username].index, 'faculty'] = ('Курс ' + faculty)
+        user_data[message.from_user.username]['course'] = ('Курс ' + faculty)
         
         should_speciality(message)
 
         
 # проверка на то, нужно ли вводить специальность или нет
 def should_speciality(message):
-    user_string = df[df['id']==message.from_user.username]
+    user_string = user_data[message.from_user.username]
     print(user_string)
-    if user_string.faculty.values != '' and user_string.education_form.values != '':
+    if user_string['form'] != None and user_string['course'] != None:
         ############### ЗАДАВАТЬ ПОЛЬЗОВАТЕЛЮ ВОПРОС, ПРАВИЛЬНО ЛИ ОН ВВЕЛ ВСЕ ДАННЫЕ????
         bot.send_message(message.chat.id, text='Найс!!!\nА теперь введите название вашего факультета')
         bot.register_next_step_handler(message, enter_speciality)
@@ -62,7 +62,7 @@ def should_speciality(message):
 def user_speciality(message):
     speciality = message.text
     bot.send_message(message.chat.id, speciality)
-    df.loc[df[df['id']==message.from_user.username].index, 'speciality'] = speciality
+    user_data[message.from_user.username]['speciality'] = speciality
     
 ######################################################################################################################
 
@@ -70,7 +70,9 @@ def user_speciality(message):
 @bot.message_handler(commands=['start'])
 def start(message):
     # создаем запись в таблице и записываем в колонку id ник пользователя в тг (нужно потом сделать проверку на существование пользователя в базе)
-    df.loc[len(df)] = [message.from_user.username, '', '', '']
+    user_data[message.from_user.username] = {'form': None,
+                          'course': None,
+                          'speciality': None}
     
     # создаем кнопки для ввода стартовой информации
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
