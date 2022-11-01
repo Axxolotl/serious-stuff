@@ -1,6 +1,10 @@
 import telebot
+from telebot import types
 
 import re
+import RSUH_parsing_raspis
+from RSUH_parsing_raspis import create_table
+from RSUH_parsing_raspis import parse_rsuh
 
 import json
 with open('специальности.json', 'r', encoding='utf-8') as file:
@@ -144,5 +148,25 @@ def approved(message):
     if message.text == 'Да':
         with open(r'user_database.json', 'w', encoding='utf-8') as file:
             json.dump(user_data, file, indent = 2, ensure_ascii=False)
+        parse_raspis(message)
     elif message.text == 'Нет':
         start(message)
+     
+def parse_raspis(message):
+#     keyboard = types.InlineKeyboardMarkup()
+#     key_continue = types.InlineKeyboardButton(text = 'СЛЕДУЮЩИЙ ДЕНЬ', callback_data = 'next')
+    
+    user_string = user_data[message.from_user.username]
+    data = create_table(parse_rsuh(user_string['form'], user_string['course'], user_string['speciality']))
+    data.to_csv('table1.csv')
+    for date in data['Дата'].unique():
+        
+        bot.send_message(message.chat.id, '-'*30)
+        bot.send_message(message.chat.id, date)
+        
+        data_day = data.loc[data['Дата']==date].drop('Дата', axis=1)
+        data_day = data_day.transpose()
+        
+        for i in data_day.columns:
+            bot.send_message(message.chat.id, data_day[i].to_string())
+        bot.send_message(message.chat.id, 'Напишите "продолжить" для перехода на следующий день')
