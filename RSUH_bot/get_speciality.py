@@ -38,7 +38,8 @@ for edu_form in form:
         time.sleep(2)
         soup = BeautifulSoup(driver.find_element(By.ID, 'caf').get_attribute('innerHTML'), 'lxml')
         groups = [i.text.strip() for i in soup.find_all('option')]
-        specialities[str(edu_form + ',' + course_num)] = groups
+        caf = [i.get('value') for i in soup.find_all('option')]
+        specialities[str(edu_form + ',' + course_num)] = {i:j for i,j in zip(groups, caf)}
         
 with open (r'C:\Users\azaza\OneDrive\Desktop\работа\специальности.json', 'w', encoding='utf-8') as file:
-    json.dump(specialities, file, ensure_ascii=False)
+    json.dump(specialities, file, indent = 2, ensure_ascii=False)
