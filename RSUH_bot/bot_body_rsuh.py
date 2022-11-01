@@ -151,7 +151,8 @@ def approved(message):
         parse_raspis(message)
     elif message.text == 'Нет':
         start(message)
-     
+
+# МЫ ПЕРЕДЕЛАЕМ, ОТВЕЧАЮ))))))))))))))))))))))))))))))))))))))))))))))))))))))
 def parse_raspis(message):
 #     keyboard = types.InlineKeyboardMarkup()
 #     key_continue = types.InlineKeyboardButton(text = 'СЛЕДУЮЩИЙ ДЕНЬ', callback_data = 'next')
