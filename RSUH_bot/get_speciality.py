@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.options import Options
 
+from bs4 import BeautifulSoup
+import requests
 import time
 import json
 
@@ -41,5 +43,5 @@ for edu_form in form:
         caf = [i.get('value') for i in soup.find_all('option')]
         specialities[str(edu_form + ',' + course_num)] = {i:j for i,j in zip(groups, caf)}
         
-with open (r'C:\Users\azaza\OneDrive\Desktop\работа\специальности.json', 'w', encoding='utf-8') as file:
+with open (r'специальности.json', 'w', encoding='utf-8') as file:
     json.dump(specialities, file, indent = 2, ensure_ascii=False)
