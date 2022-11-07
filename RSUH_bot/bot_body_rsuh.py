@@ -6,7 +6,6 @@ from telebot import types
 import re
 # импорт функций из файла, отвечающего за парсинг сайта
 import RSUH_parsing_raspis
-from RSUH_parsing_raspis import create_table
 from RSUH_parsing_raspis import parse_rsuh
 
 # импорт джейсона
