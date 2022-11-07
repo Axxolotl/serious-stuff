@@ -191,6 +191,7 @@ def enter_speciality(message):
 # МЫ ПЕРЕДЕЛАЕМ, ОТВЕЧАЮ))))))))))))))))))))))))))))))))))))))))))))))))))))))
 def parse_raspis(message):
 
+   
     user_string = user_data[message.from_user.username]
     
     raspis = parse_rsuh(user_string)
@@ -210,3 +211,7 @@ def parse_raspis(message):
         else:
             ebuchiy_spisok.append(' | '.join(i))
     bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton("/start")
+    markup.add(btn1)
+    bot.send_message(message.chat.id, '( ͡° ͜ʖ ͡°)', reply_markup=markup)
