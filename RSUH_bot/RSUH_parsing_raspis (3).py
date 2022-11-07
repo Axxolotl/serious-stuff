@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 # библиотека для работы со временем и датами (понадобится в дальнейшем)
 import datetime
+from dateutil.relativedelta import relativedelta
 
 # инфу будем хранить в джейсоновском формате (а зачем???)
 import json
@@ -37,7 +38,7 @@ def create_data(user_string):
     # берем сегодняшнюю дату (она же начальная)
     today_date = datetime.datetime.now().date()
     # считаем конечную дату
-    date_needed = today_date + datetime.timedelta(month=1)
+    date_needed = today_date + relativedelta(months=+1)
     
     # опять создаем ключ для обращения к джейсону со специальностями
     key = user_string['form'] + ',' + user_string['course']
