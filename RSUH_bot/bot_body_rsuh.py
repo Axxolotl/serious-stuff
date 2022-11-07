@@ -1,4 +1,3 @@
-# импорт библиотек для создания бота
 import telebot
 from telebot import types
 
@@ -191,20 +190,21 @@ def enter_speciality(message):
 
 # МЫ ПЕРЕДЕЛАЕМ, ОТВЕЧАЮ))))))))))))))))))))))))))))))))))))))))))))))))))))))
 def parse_raspis(message):
-#     keyboard = types.InlineKeyboardMarkup()
-#     key_continue = types.InlineKeyboardButton(text = 'СЛЕДУЮЩИЙ ДЕНЬ', callback_data = 'next')
-    
+
     user_string = user_data[message.from_user.username]
-    data = create_table(parse_rsuh(user_string['form'], user_string['course'], user_string['speciality']))
-    data.to_csv('table1.csv')
-    for date in data['Дата'].unique():
-        
-        bot.send_message(message.chat.id, '-'*30)
-        bot.send_message(message.chat.id, date)
-        
-        data_day = data.loc[data['Дата']==date].drop('Дата', axis=1)
-        data_day = data_day.transpose()
-        
-        for i in data_day.columns:
-            bot.send_message(message.chat.id, data_day[i].to_string())
-        bot.send_message(message.chat.id, 'Напишите "продолжить" для перехода на следующий день')
+    
+    raspis = parse_rsuh(user_string)
+    
+    ebuchiy_spisok = []
+    for i in raspis[1:]:
+        if len(i) == 8:
+            try:
+                bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
+            except:
+                pass
+            ebuchiy_spisok = []
+            bot.send_message(message.chat.id, (i[0]))
+            ebuchiy_spisok.append('|'.join(i[1:]))
+        else:
+            ebuchiy_spisok.append('|'.join(i))
+    bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
