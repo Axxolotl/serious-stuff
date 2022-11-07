@@ -76,7 +76,9 @@ def parse_rsuh(data):
         parse_data.append([j.text for j in i.find_all('td')])
     return parse_data
 #############################################################################################################################################
-
+parse_rsuh(create_data({"form": "Дневная",
+    "course": "Курс 4",
+    "speciality": "ОИС_ИС (Группа: 1)"}))
 # def create_table(data):
 #     # создаем датафрейм с расписанием, в качестве названий колонок берем первую строку 
 #     data_frame = pd.DataFrame(columns=data[0])
