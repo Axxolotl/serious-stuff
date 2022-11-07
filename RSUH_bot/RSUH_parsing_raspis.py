@@ -38,6 +38,7 @@ def create_data(user_string):
     # берем сегодняшнюю дату (она же начальная)
     today_date = datetime.datetime.now().date()
     # считаем конечную дату
+    date_srok = today_date + datetime.timedelta(days=7)
     date_needed = today_date + relativedelta(months=+1)
     
     # опять создаем ключ для обращения к джейсону со специальностями
@@ -47,7 +48,7 @@ def create_data(user_string):
     data = {
         'formob' : form_data[user_string['form']],
         'kyrs' : user_string['course'].split()[1],
-        'srok' : str(date_needed),
+        'srok' : str(date_srok),
         'caf' : specialities_json[key][user_string['speciality']],
         'cafzn' : user_string['speciality'],
         'sdate_year' : str(today_date.year),
