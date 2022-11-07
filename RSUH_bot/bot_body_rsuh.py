@@ -204,7 +204,9 @@ def parse_raspis(message):
                 pass
             ebuchiy_spisok = []
             bot.send_message(message.chat.id, (i[0]))
-            ebuchiy_spisok.append('|'.join(i[1:]))
+            ebuchiy_spisok.append(i[1] + ' Пара' + '\n\n' + ' | '.join(i[2:]))
+        elif len(i) == 7:
+            ebuchiy_spisok.append('\n' + i[0] + ' Пара' + '\n\n' + ' | '.join(i[1:]))
         else:
-            ebuchiy_spisok.append('|'.join(i))
+            ebuchiy_spisok.append(' | '.join(i))
     bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
