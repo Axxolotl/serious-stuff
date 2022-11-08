@@ -89,7 +89,6 @@ def user_speciality(message, dict_spec):
 def should_speciality(message):
     # запись о пользователе из базы данных
     user_string = user_data[message.from_user.username]
-    print(user_string)
     # мы предлагаем пользователю ввести специальность, если у него уже введен курс и форма обучения
     if user_string['form'] != None and user_string['course'] != None:
         bot.send_message(message.chat.id, text='Найс!!!\nА теперь введите название вашего факультета')
