@@ -150,7 +150,13 @@ def start(message):
         # приветственное сообщение
         bot.send_message(message.chat.id, 'С Хэллоуином блять<3')
         bot.send_video(message.chat.id, "https://media.tenor.com/J8XcyuI5w1QAAAAd/neco-arc-neco.gif",  reply_markup=markup)
-
+        
+@bot.message_handler(commands=['time'])
+def get_time(message):
+    time_raspis = '\n'.join([i[0]+' пара: ' + i[1] for i in time.items()])
+    bot.send_message(message.chat.id, text=time_raspis)
+    bot.send_message(message.chat.id, 'Что делаем дальше?')
+    
 # функция - обработчик кнопок для ввода курса и формы обучения
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
@@ -204,7 +210,6 @@ def enter_speciality(message):
 # МЫ ПЕРЕДЕЛАЕМ, ОТВЕЧАЮ))))))))))))))))))))))))))))))))))))))))))))))))))))))(переделали)
 def parse_raspis(message):
 
-   
     user_string = user_data[message.from_user.username]
     
     raspis = parse_rsuh(user_string)
@@ -224,7 +229,10 @@ def parse_raspis(message):
         else:
             ebuchiy_spisok.append(' | '.join(i))
     bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
+    
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("/start")
-    markup.add(btn1)
+    btn2 = types.KeyboardButton("/time")
+    markup.add(btn1, btn2)
+    
     bot.send_message(message.chat.id, '( ͡° ͜ʖ ͡°)', reply_markup=markup)
