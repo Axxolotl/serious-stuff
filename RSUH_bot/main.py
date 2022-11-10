@@ -249,7 +249,7 @@ def parse_raspis(message):
     
     user_string = user_data[message.from_user.username]
     
-    raspis = parse_rsuh(user_string)
+    raspis = parse_rsuh(user_string, message)
     
     lessons_list = []
     for i in raspis[1:]:
