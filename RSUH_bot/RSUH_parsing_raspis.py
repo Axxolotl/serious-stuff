@@ -38,20 +38,17 @@ def create_data(user_string, message):
     # берем сегодняшнюю дату (она же начальная)
     today_date = datetime.datetime.now().date()
     # считаем конечную дату
-    date_srok_week = today_date + datetime.timedelta(days=7)
-    date_srok_day = today_date + datetime.timedelta(days=1)
-    date_srok_month = today_date + datetime.timedelta(months=1)
     date_needed = today_date + relativedelta(months=+1)
     
     # опять создаем ключ для обращения к джейсону со специальностями
     key = user_string['form'] + ',' + user_string['course']
     
     # создаем данные для пост запроса
-    if message.text == 'На сегодня/завтра':
-        data = {
+    
+    data = {
         'formob' : form_data[user_string['form']],
         'kyrs' : user_string['course'].split()[1],
-        'srok' : str(date_srok_day),
+        'srok' : None,
         'caf' : specialities_json[key][user_string['speciality']],
         'cafzn' : user_string['speciality'],
         'sdate_year' : str(today_date.year),
@@ -61,34 +58,14 @@ def create_data(user_string, message):
         'fdate_month': is_date_good(str(date_needed.month)),
         'fdate_day' : is_date_good(str(date_needed.day))
         }
+    
+    if message.text == 'На сегодня/завтра':
+        data['srok'] = str(today_date + datetime.timedelta(days=1))
     elif message.text == 'На неделю':
-        data = {
-            'formob' : form_data[user_string['form']],
-            'kyrs' : user_string['course'].split()[1],
-            'srok' : str(date_srok_week),
-            'caf' : specialities_json[key][user_string['speciality']],
-            'cafzn' : user_string['speciality'],
-            'sdate_year' : str(today_date.year),
-            'sdate_month': is_date_good(str(today_date.month)),
-            'sdate_day' : is_date_good(str(today_date.day)),
-            'fdate_year' : str(date_needed.year),
-            'fdate_month': is_date_good(str(date_needed.month)),
-            'fdate_day' : is_date_good(str(date_needed.day))
-        }
+        data['srok'] = str(today_date + datetime.timedelta(days=7))
     elif message.text == 'На месяц':
-        data = {
-            'formob' : form_data[user_string['form']],
-            'kyrs' : user_string['course'].split()[1],
-            'srok' : str(date_srok_month),
-            'caf' : specialities_json[key][user_string['speciality']],
-            'cafzn' : user_string['speciality'],
-            'sdate_year' : str(today_date.year),
-            'sdate_month': is_date_good(str(today_date.month)),
-            'sdate_day' : is_date_good(str(today_date.day)),
-            'fdate_year' : str(date_needed.year),
-            'fdate_month': is_date_good(str(date_needed.month)),
-            'fdate_day' : is_date_good(str(date_needed.day))
-        }
+        data['srok'] = str(today_date + relativedelta(months=+1))
+
     return data
 
 ########################################################## ПАРСЕР ДАННЫХ С САЙТА ##########################################################
