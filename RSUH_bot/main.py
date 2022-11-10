@@ -124,10 +124,19 @@ def approved(message):
     if message.text == 'Да':
         with open(r'user_database.json', 'w', encoding='utf-8') as file:
             json.dump(user_data, file, indent = 2, ensure_ascii=False)
-        parse_raspis(message)
+        parse_raspis_choose(message)
     # если пользователь ввел что-то неправильно, то мы перекидываем его на старт, на начало ввода данных
     elif message.text == 'Нет':
         start(message)
+# функция определяющая на какое время парсить расписание        
+def parse_raspis_choose(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton("На сегодня/завтра")
+    btn2 = types.KeyboardButton("На неделю")
+    btn3 = types.KeyboardButton("На месяц")
+    markup.add(btn1, btn2, btn3)
+    bot.send_message(message.chat.id, 'На какой срок нужно расписание?', reply_markup=markup)
+    bot.register_next_step_handler(message, parse_raspis)
 #########################################################################################################################################################    
 ################################################################### ОСНОВНАЯ ЧАСТЬ БОТА #################################################################
 
