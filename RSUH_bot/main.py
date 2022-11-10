@@ -1,23 +1,4 @@
-import telebot
-from telebot import types
-
-# импорт регулярных выражений для обработки строковых данных
-import re
-# импорт функций из файла, отвечающего за парсинг сайта
-import RSUH_parsing_raspis
-from RSUH_parsing_raspis import parse_rsuh
-
-# импорт джейсона
-import json
-
-###################################################################мм ЧТЕНИЕ ДЖЕЙСОНОВ ##############################################################
-# считываем файл со всеми специальностями и кафедрами
-with open('специальности.json', 'r', encoding='utf-8') as file:
-    specialities_json = json.load(file)
-
-# считываем базу данных пользователей
-with open(r'user_database.json', 'r', encoding='utf-8') as database:
-    user_data = json.load(database)
+admins = ['saycringe', 'axxolotll']
 ################################################################### СОЗДАНИЕ БОТА ###################################################################
 
 # создаем сущность бота (токен нужно будет убрать из открытого доступа)
@@ -127,6 +108,8 @@ def approved(message):
     elif message.text == 'Нет':
         start(message)
 #########################################################################################################################################################
+############################################# СИСТЕМА ОПОВЕЩЕНИЙ ОТ ОДМЕНОВ ################################################
+##########################################################################################################################     
 ################################################################### ОСНОВНАЯ ЧАСТЬ БОТА #################################################################
 
 # реакция бота на /start
@@ -136,13 +119,15 @@ def start(message):
     # если пользователь уже есть в базе данных, то здороваемся с ним и предлагаем проверить его данные
     if message.text != 'Нет' and name in user_data.keys() and user_data[name]['form'] != None and user_data[name]['course'] != None and user_data[name]['speciality'] != None:
         bot.send_message(message.chat.id, 'Мы тебя помним:)')
+        user_data[name]['user_id'] = message.from_user.id
         bot.send_photo(message.chat.id, 'https://sun9-28.userapi.com/impg/HBKGn-a2I3_DvKNS-U-8IigL7UUmBDmTtew5kg/j8KR3EJc7Mc.jpg?size=497x604&quality=95&sign=c68739d29dbcb863c33903b0c44f78d2&type=album')
         is_info_right(message)
     else:
         # создаем запись в базе данных и записываем в колонку id ник пользователя в тг 
-        user_data[message.from_user.username] = {'form': None,
+        user_data[name] = {'form': None,
                               'course': None,
-                              'speciality': None}
+                              'speciality': None,
+                              'user_id': message.from_user.id}
 
         # создаем кнопки для ввода стартовой информации
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -160,6 +145,23 @@ def get_time(message):
     bot.send_message(message.chat.id, text=time_raspis)
     bot.send_message(message.chat.id, 'Что делаем дальше?')
     
+@bot.message_handler(commands=['send'])
+def send_messages(message):
+    sender = message.from_user.username
+    if sender in admins:
+        bot.send_message(message.chat.id, 'Текст сообщения, пожалуйста')
+        bot.register_next_step_handler(message, enter_and_send)
+
+    else:
+        bot.send_message(message.chat.id, f'у вас нет прав для запуска команды')
+        
+def enter_and_send(message):
+    for user in user_data.keys():  
+        try:
+            bot.send_message(user_data[user]['user_id'],  message.text)
+        except Exception as e:
+            bot.send_message(message.chat.id, f'ошибка отправки сообщения юзеру - {user}')
+           
 # функция - обработчик кнопок для ввода курса и формы обучения
 @bot.message_handler(content_types=['text'])
 def enter_info(message):
@@ -215,7 +217,7 @@ def enter_speciality(message):
 
 # МЫ ПЕРЕДЕЛАЕМ, ОТВЕЧАЮ))))))))))))))))))))))))))))))))))))))))))))))))))))))(переделали)
 def parse_raspis(message):
-
+    
     user_string = user_data[message.from_user.username]
     
     raspis = parse_rsuh(user_string)
