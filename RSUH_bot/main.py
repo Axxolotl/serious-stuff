@@ -87,11 +87,14 @@ def user_speciality(message, dict_spec):
         
 # проверка на то, нужно ли вводить специальность или нет
 def should_speciality(message):
+    if message.text == '/start':
+        msg = bot.reply_to(message, 'Окей, давай попробуем сначала')
+        bot.register_next_step_handler(msg, start)
     # запись о пользователе из базы данных
     user_string = user_data[message.from_user.username]
     # мы предлагаем пользователю ввести специальность, если у него уже введен курс и форма обучения
     if user_string['form'] != None and user_string['course'] != None:
-        bot.send_message(message.chat.id, text='Найс!!!\nА теперь введите название вашего факультета')
+        bot.send_message(message.chat.id, text='А теперь введите название вашего факультета')
         bot.register_next_step_handler(message, enter_speciality)
         
 ####################################################### ПРОВЕРКА ДАННЫХ НА ПРАВИЛЬНОСТЬ ###################################################################мм      
@@ -129,8 +132,9 @@ def approved(message):
 # реакция бота на /start
 @bot.message_handler(commands=['start'])
 def start(message):
+    name = message.from_user.username
     # если пользователь уже есть в базе данных, то здороваемся с ним и предлагаем проверить его данные
-    if message.text != 'Нет' and message.from_user.username in user_data.keys():
+    if message.text != 'Нет' and name in user_data.keys() and user_data[name]['form'] != None and user_data[name]['course'] != None and user_data[name]['speciality'] != None:
         bot.send_message(message.chat.id, 'Мы тебя помним:)')
         bot.send_photo(message.chat.id, 'https://sun9-28.userapi.com/impg/HBKGn-a2I3_DvKNS-U-8IigL7UUmBDmTtew5kg/j8KR3EJc7Mc.jpg?size=497x604&quality=95&sign=c68739d29dbcb863c33903b0c44f78d2&type=album')
         is_info_right(message)
@@ -189,8 +193,11 @@ def enter_speciality(message):
     # проверка на наличие подходящих факультетов
     if len(all_specialities) == 0:
         # немного пассивной агрессииЮ потому что СЛОЖНАААААААААААА
-        bot.send_message(message.chat.id, text='Я не смог найти твою специальность, попробуй ещё раз!')
-        should_speciality(message)
+        if message.text == '/start':
+            start(message)
+        else:
+            bot.send_message(message.chat.id, text='Я не смог найти твою специальность, попробуй ещё раз!\nЕсли ты думаешь, что неправильно указал(а) форму обучения или курс - напиши /start!')
+            should_speciality(message)
     else:
         # если все норм, то создаем словарь с перечнем подходящих специальностей с индексами
         dict_spec = {num:spec for num, spec in zip(range(1,len(all_specialities)+1), all_specialities)}
@@ -213,21 +220,21 @@ def parse_raspis(message):
     
     raspis = parse_rsuh(user_string)
     
-    ebuchiy_spisok = []
+    lessons_list = []
     for i in raspis[1:]:
         if len(i) == 8:
             try:
-                bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
+                bot.send_message(message.chat.id, ('\n'.join(lessons_list)))
             except:
                 pass
-            ebuchiy_spisok = []
+            lessons_list = []
             bot.send_message(message.chat.id, (i[0]))
-            ebuchiy_spisok.append(i[1] + ' Пара' + '     ' + time[i[1]] + '\n\n' + ' | '.join(i[2:]))
+            lessons_list.append(i[1] + ' Пара' + '     ' + time[i[1]] + '\n\n' + ' | '.join(i[2:]))
         elif len(i) == 7:
-            ebuchiy_spisok.append('\n' + i[0] + ' Пара'+ '     ' + time [i[0]] + '\n\n' + ' | '.join(i[1:]))
+            lessons_list.append('\n' + i[0] + ' Пара'+ '     ' + time [i[0]] + '\n\n' + ' | '.join(i[1:]))
         else:
-            ebuchiy_spisok.append(' | '.join(i))
-    bot.send_message(message.chat.id, ('\n'.join(ebuchiy_spisok)))
+            lessons_list.append(' | '.join(i))
+    bot.send_message(message.chat.id, ('\n'.join(lessons_list)))
     
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("/start")
@@ -235,3 +242,4 @@ def parse_raspis(message):
     markup.add(btn1, btn2)
     
     bot.send_message(message.chat.id, '( ͡° ͜ʖ ͡°)', reply_markup=markup)
+bot.infinity_polling()
