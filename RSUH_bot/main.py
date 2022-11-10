@@ -102,8 +102,8 @@ def should_speciality(message):
 ####################################################### ПРОВЕРКА ДАННЫХ НА ПРАВИЛЬНОСТЬ ###################################################################мм      
 def is_info_right(message):
     # отправляем пользователю всю введенную им информацию
-    for i in user_data[message.from_user.username].items():
-        bot.send_message(message.chat.id, i[1])
+    for i in list(user_data[message.from_user.username].values())[:-1]:
+        bot.send_message(message.chat.id, i)
     
     # создаем кнопки для подтверждения
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
