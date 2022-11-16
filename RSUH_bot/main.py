@@ -65,8 +65,10 @@ def get_form(message):
             user_data[message.from_user.username]['form'] = dict_form[form_edu]
             # функция, которая проверяет, нужно ли предлагать пользователю ввести специальность, или он еще не все ввел
             should_speciality(message)
+        else:
+            bot.send_message(message.chat.id,'Неправильная цифра, начни заново, нажми на кнопку ещё раз!')
     except:
-        bot.send_message(message.chat.id, text='Что то тут не так...')
+        bot.send_message(message.chat.id, text='Что то тут не так... лучше напиши "/start"')
                 
 # курс
 def user_faculty(message):
@@ -78,8 +80,10 @@ def user_faculty(message):
             user_data[message.from_user.username]['course'] = ('Курс ' + faculty)
             # функция, которая проверяет, нужно ли предлагать пользователю ввести специальность, или он еще не все ввел
             should_speciality(message)
+        else:
+            bot.send_message(message.chat.id,'Неправильная цифра, начни заново, нажми на кнопку ещё раз!')
     except:
-        bot.send_message(message.chat.id, text='Что то тут не так...')
+        bot.send_message(message.chat.id, text='Что то тут не так... лучше напиши "/start"')
 
 # специальность       
 def user_speciality(message, dict_spec):
@@ -92,20 +96,22 @@ def user_speciality(message, dict_spec):
          # после введения всех данных, спрашиваем у пользователя всё ли он ввел правильно?
         is_info_right(message)
     except:
-        bot.send_message(message.chat.id, text='Что то тут не так...')
+        bot.send_message(message.chat.id, text='Что то тут не так... лучше напиши "/start"')
         
 # проверка на то, нужно ли вводить специальность или нет
-def should_speciality(message):
+def should_speciality(message, repeat=True):
     if message.text == '/start':
-        msg = bot.reply_to(message, 'Окей, давай попробуем сначала')
+        msg = bot.reply_to(message, 'Окей, давай попробуем сначала :)')
         bot.register_next_step_handler(msg, start)
     # запись о пользователе из базы данных
     user_string = user_data[message.from_user.username]
     # мы предлагаем пользователю ввести специальность, если у него уже введен курс и форма обучения
     if user_string['form'] != None and user_string['course'] != None:
-        bot.send_message(message.chat.id, text='А теперь введите название вашего факультета')
+        if repeat:
+            bot.send_message(message.chat.id, text='А теперь введи название своего факультета. Ты можешь не копировать свою специальность с сайта РГГУ, а ввести её аббревиатуру.\nНапример, если у тебя МПиМБ-1, можно ввести просто "мпимб" и выбрать нужную специальность из списка, отправив цифру')
         bot.register_next_step_handler(message, enter_speciality)
-        
+    else:
+        bot.send_message(message.chat.id,'Для продолжения открой меню с кнопками ;)')
 ####################################################### ПРОВЕРКА ДАННЫХ НА ПРАВИЛЬНОСТЬ ###################################################################мм      
 def is_info_right(message):
     # отправляем пользователю всю введенную им информацию
@@ -191,7 +197,6 @@ def send_messages(message):
     if sender in admins:
         bot.send_message(message.chat.id, 'Текст сообщения, пожалуйста')
         bot.register_next_step_handler(message, enter_and_send)
-
     else:
         bot.send_message(message.chat.id, f'у вас нет прав для запуска команды')
         
@@ -242,7 +247,7 @@ def enter_speciality(message):
             start(message)
         else:
             bot.send_message(message.chat.id, text='Я не смог найти твою специальность, попробуй ещё раз!\nЕсли ты думаешь, что неправильно указал(а) форму обучения или курс - напиши /start!')
-            should_speciality(message)
+            should_speciality(message, False)
     else:
         # если все норм, то создаем словарь с перечнем подходящих специальностей с индексами
         dict_spec = {num:spec for num, spec in zip(range(1,len(all_specialities)+1), all_specialities)}
