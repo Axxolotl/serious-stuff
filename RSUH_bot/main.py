@@ -185,7 +185,7 @@ def send_messages(message):
         bot.send_message(message.chat.id, f'у вас нет прав для запуска команды')
         
 def enter_and_send(message):
-    if message.text == '/stop'
+    if message.text == '/stop':
         start(message)
     else:
         for user in user_data.keys():  
