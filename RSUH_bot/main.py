@@ -265,7 +265,10 @@ def parse_raspis(message):
             lessons_list.append('\n' + i[0] + ' Пара'+ '     ' + time [i[0]] + '\n\n' + ' | '.join(i[1:]))
         else:
             lessons_list.append(' | '.join(i))
-    bot.send_message(message.chat.id, ('\n'.join(lessons_list)))
+    if not lessons_list:
+        bot.send_message(message.chat.id, 'Похоже, что на выбранную дату у тебя нет занятий, можешь отдыхать ;)')
+    else:
+        bot.send_message(message.chat.id, ('\n'.join(lessons_list)))
     
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("/start")
