@@ -10,6 +10,13 @@ from RSUH_parsing_raspis import parse_rsuh
 # импорт джейсона
 import json
 
+import traceback
+import sys
+
+########################################################## LOGS #############################################################
+import logging
+logging.basicConfig(level=logging.INFO, filename="py_log.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
 ###################################################################мм ЧТЕНИЕ ДЖЕЙСОНОВ ##############################################################
 # считываем файл со всеми специальностями и кафедрами
 with open('специальности.json', 'r', encoding='utf-8') as file:
@@ -144,6 +151,10 @@ def parse_raspis_choose(message):
 @bot.message_handler(commands=['start'])
 def start(message):
     name = message.from_user.username
+    try:
+        logging.info(f"Пользователь {name} воспользовался /start {user_data[name]}")
+    except:
+        logging.info(f"НОВЫЙ пользователь {name} воспользовался /start {name}")
     # если пользователь уже есть в базе данных, то здороваемся с ним и предлагаем проверить его данные
     if message.text != 'Нет' and name in user_data.keys() and user_data[name]['form'] != None and user_data[name]['course'] != None and user_data[name]['speciality'] != None:
         bot.send_message(message.chat.id, 'Мы тебя помним:)')
@@ -273,11 +284,12 @@ def parse_raspis(message):
         bot.send_message(message.chat.id, 'Похоже, что на выбранную дату у тебя нет занятий, можешь отдыхать ;)')
     else:
         bot.send_message(message.chat.id, ('\n'.join(lessons_list)), parse_mode="HTML")
-    
+
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("/start")
     btn2 = types.KeyboardButton("/time")
     markup.add(btn1, btn2)
     
     bot.send_message(message.chat.id, '( ͡° ͜ʖ ͡°)', reply_markup=markup)
+
 bot.infinity_polling()
