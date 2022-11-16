@@ -253,9 +253,10 @@ def parse_raspis(message):
     
     lessons_list = []
     for i in raspis[1:]:
+        i[-3] = '<i>'+i[-3]+'</i>'
         if len(i) == 8:
             try:
-                bot.send_message(message.chat.id, ('\n'.join(lessons_list)))
+                bot.send_message(message.chat.id, ('\n'.join(lessons_list)), parse_mode="HTML")
             except:
                 pass
             lessons_list = []
@@ -268,7 +269,7 @@ def parse_raspis(message):
     if not lessons_list:
         bot.send_message(message.chat.id, 'Похоже, что на выбранную дату у тебя нет занятий, можешь отдыхать ;)')
     else:
-        bot.send_message(message.chat.id, ('\n'.join(lessons_list)))
+        bot.send_message(message.chat.id, ('\n'.join(lessons_list)), parse_mode="HTML")
     
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("/start")
