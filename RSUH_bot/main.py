@@ -185,11 +185,14 @@ def send_messages(message):
         bot.send_message(message.chat.id, f'у вас нет прав для запуска команды')
         
 def enter_and_send(message):
-    for user in user_data.keys():  
-        try:
-            bot.send_message(user_data[user]['user_id'],  message.text)
-        except Exception as e:
-            bot.send_message(message.chat.id, f'ошибка отправки сообщения юзеру - {user}')
+    if message.text == '/stop'
+        start(message)
+    else:
+        for user in user_data.keys():  
+            try:
+                bot.send_message(user_data[user]['user_id'],  message.text)
+            except Exception as e:
+                bot.send_message(message.chat.id, f'ошибка отправки сообщения юзеру - {user}')
 ###################################################################################################################################           
 # функция - обработчик кнопок для ввода курса и формы обучения
 @bot.message_handler(content_types=['text'])
