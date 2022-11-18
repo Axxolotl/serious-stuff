@@ -43,5 +43,5 @@ for edu_form in form:
         caf = [i.get('value') for i in soup.find_all('option')]
         specialities[str(edu_form + ',' + course_num)] = {i:j for i,j in zip(groups, caf)}
         
-with open (r'специальности.json', 'w', encoding='utf-8') as file:
+with open (r'specialities_list.json', 'w', encoding='utf-8') as file:
     json.dump(specialities, file, indent = 2, ensure_ascii=False)
