@@ -10,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 import json
 
 # считываем файл со специальностями (нам оттуда нужны значения кафедры)
-with open('специальности.json', 'r', encoding='utf-8') as file:
+with open('specialities_list.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
 
 ######################################################### ПОДГОТОВКА К ПАРСИНГУ ################################################################### 
