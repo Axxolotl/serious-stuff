@@ -1,3 +1,4 @@
+import time
 import telebot
 from telebot import types
 
@@ -19,7 +20,7 @@ logging.basicConfig(level=logging.INFO, filename="py_log.log",filemode="w",
                     format="%(asctime)s %(levelname)s %(message)s")
 ###################################################################мм ЧТЕНИЕ ДЖЕЙСОНОВ ##############################################################
 # считываем файл со всеми специальностями и кафедрами
-with open('специальности.json', 'r', encoding='utf-8') as file:
+with open('specialities_list.json', 'r', encoding='utf-8') as file:
     specialities_json = json.load(file)
 
 # считываем базу данных пользователей
@@ -207,6 +208,7 @@ def enter_and_send(message):
         for user in user_data.keys():  
             try:
                 bot.send_message(user_data[user]['user_id'],  message.text)
+                time.sleep(1)
             except Exception as e:
                 bot.send_message(message.chat.id, f'ошибка отправки сообщения юзеру - {user}')
 ###################################################################################################################################           
