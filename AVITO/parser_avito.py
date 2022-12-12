@@ -12,6 +12,7 @@ chrome_options.add_argument("--headless")
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
 url = 'https://www.avito.ru/all/noutbuki?cd=1&p=1&q=macbook'
+url1 = 'www.avito.ru'
 
 driver.get(url)
 time.sleep(2)
