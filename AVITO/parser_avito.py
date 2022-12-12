@@ -16,3 +16,10 @@ url = 'https://www.avito.ru/all/noutbuki?cd=1&p=1&q=macbook'
 driver.get(url)
 time.sleep(2)
 html = driver.page_source
+
+soup = BeautifulSoup(html, 'lxml')
+models = soup.find_all(class_='title-root-zZCwT iva-item-title-py3i_ title-listRedesign-_rejR title-root_maxHeight-X6PsH text-text-LurtD text-size-s-BxGpL text-bold-SinUO')
+models = [i.text for i in headers]
+
+prices = soup.find_all(attrs={'itemprop':'price'})
+prices = [i.get('content') for i in prices]
