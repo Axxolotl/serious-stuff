@@ -1,11 +1,9 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.options import Options
 
 from bs4 import BeautifulSoup
-import requests
+
 import time
 import json
 
