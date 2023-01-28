@@ -211,6 +211,17 @@ def enter_and_send(message):
                 time.sleep(1)
             except Exception as e:
                 bot.send_message(message.chat.id, f'ошибка отправки сообщения юзеру - {user}')
+
+##################################################### ЗАМЕНА СПЕЦИАЛЬНОСТЕЙ НА НОВЫЕ КАЙФ ######################################################
+@bot.message_handler(commands=['replacesp'])
+def replace_sp(message):
+    sender = message.from_user.username
+    if sender in admins:
+        bot.send_message(message.chat.id, 'Парсим, подождите')
+        replace_speciality()
+        bot.send_message(message.chat.id, 'Готово... Вроде')
+    else:
+        bot.send_message(message.chat.id, f'у вас нет прав для запуска команды')
 ###################################################################################################################################           
 # функция - обработчик кнопок для ввода курса и формы обучения
 @bot.message_handler(content_types=['text'])
