@@ -8,6 +8,11 @@ import re
 import RSUH_parsing_raspis
 from RSUH_parsing_raspis import parse_rsuh
 
+
+# парсинг специальностей и замена файла с ними
+import parse_speciality
+from parse_speciality import replace_speciality
+
 # импорт джейсона
 import json
 
